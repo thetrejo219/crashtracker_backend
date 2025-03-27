@@ -12,8 +12,9 @@ declare global{
 
 
 export const validateBudgetId = async(req: Request, res: Response, next: NextFunction) => {
-    await param('budgetId').isInt().withMessage('ID no valido')
-    .custom(value=>value>0).withMessage('ID no valido').run(req)
+    await param('budgetId').isInt().withMessage('ID no valido').bail()
+    .custom(value=>value>0).withMessage('ID no valido').bail()
+    .run(req)
 
     let errors = validationResult(req)
         if (!errors.isEmpty()) {
@@ -48,5 +49,14 @@ export const validateBudgetInput = async(req: Request, res: Response, next: Next
             .custom(value=>value>0).withMessage('El presupuesto debe ser mayor a cero').run(req)
 
     
+    next()
+}
+
+export function hasAccess(req: Request, res: Response, next: NextFunction){
+    if(req.budget.userId !== req.user.id){
+        const error = new Error('Accion no valida')
+        res.status(401).json({error:error.message})
+        return
+    }
     next()
 }
