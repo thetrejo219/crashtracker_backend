@@ -98,7 +98,7 @@ export class AuthController{
                 email:user.email,
                 token:user.token
         })
-        res.send('Revisa tu email para instrucciones')
+        res.json('Revisa tu email para instrucciones')
     }
     static validateToken = async(req:Request,res:Response)=>{
         const {token} = req.body
@@ -108,7 +108,7 @@ export class AuthController{
             res.status(404).json({error:error.message})
             return
         }
-        res.json('Token valido')
+        res.json('Token valido, asigna un nuevo password')
     }
     static resetPasswordWithToken = async(req:Request,res:Response)=>{
         const {token} = req.params
